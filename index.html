@@ -140,9 +140,11 @@ h1 .bolt{color:#F2B705}
 .who .name{font-family:var(--font-title);font-size:18px;line-height:1.15;color:#3B3125;display:flex;align-items:center;gap:6px}
 .who .tag{
   font-size:11.5px;color:#6F6455;margin-top:3px;font-weight:700;
-  display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  background:rgba(255,255,255,.72);border-radius:999px;padding:1.5px 9px;
+  display:inline-flex;align-items:center;gap:3px;max-width:100%;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:rgba(255,255,255,.72);border-radius:999px;padding:2px 9px 2px 7px;
 }
+.who .tag svg{width:12px;height:12px;flex:none;display:block;opacity:.7}
 .trophy{
   font-size:10.5px;font-weight:800;color:#8A5B00;background:#FFE9A8;
   border-radius:999px;padding:2px 7px;flex:none;
@@ -623,7 +625,7 @@ function cardHTML(m, items, doneCount){
       <div class="avatar">${CHARS[m.id]}</div>
       <div class="who">
         <div class="name">${m.name}${allDone ? `<span class="trophy">🏆 완료!</span>` : ""}</div>
-        <span class="tag">📅 ${m.exam}</span>
+        <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4v5l3 1.9"/></svg>${m.exam}</span>
       </div>
       <div class="progress"><div class="num"><b>${doneCount}</b>/${total}개 완료</div></div>
     </div>
