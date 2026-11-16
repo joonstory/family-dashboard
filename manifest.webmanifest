@@ -1,7 +1,7 @@
 {
-  "name": "우리 가족 포켓몬고 To Do",
-  "short_name": "가족 To Do",
-  "description": "우리 가족이 함께 쓰는 실시간 할 일 대시보드",
+  "name": "기말고사 대비 포켓몬고 To Do",
+  "short_name": "기말 대비 To Do",
+  "description": "기말고사 4과목 소단위 체크리스트 · 실시간 동기화",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",
