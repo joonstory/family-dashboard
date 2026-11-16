@@ -181,7 +181,9 @@ h1 .bolt{color:#F2B705}
   transition:background .15s,color .15s;
 }
 .icon-btn:hover{background:rgba(120,96,60,.09)}
-.icon-btn.del{font-size:15px;font-weight:700;color:#A9977F}
+.icon-btn svg{width:16px;height:16px;display:block}
+.icon-btn.del{color:#B5A48C}
+.icon-btn.del svg{width:15px;height:15px}
 .item.confirming{background:#FDEDED;border-color:#F6D2D2}
 .confirm-btn{
   flex:none;border:0;border-radius:10px;padding:7px 10px;font-size:12.5px;font-weight:800;
@@ -436,18 +438,21 @@ const CHARS = {
   dad: `
   <svg viewBox="0 0 100 100" role="img" aria-label="듬직한 곰 캐릭터">
     <ellipse cx="50" cy="94" rx="27" ry="4" fill="#2F5A54" opacity=".14"/>
-    <path d="M23 33 q-3 -12 8 -14 q4 8 1 15 z" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.4" stroke-linejoin="round"/>
-    <path d="M77 33 q3 -12 -8 -14 q-4 8 -1 15 z" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.4" stroke-linejoin="round"/>
-    <ellipse cx="50" cy="60" rx="32" ry="29" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.8"/>
-    <ellipse cx="50" cy="70" rx="19" ry="15" fill="#F6E7C6"/>
-    <path d="M31 72 q6 5 12 1" stroke="#2F5A54" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-    <path d="M69 72 q-6 5 -12 1" stroke="#2F5A54" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-    <path d="M35 50 q7 -6 14 0" stroke="#1C3B37" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-    <path d="M51 50 q7 -6 14 0" stroke="#1C3B37" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-    <path d="M43 59 q7 6 14 0" stroke="#1C3B37" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M47 59 h3 v4 h-3 z M50 59 h3 v4 h-3 z" fill="#FFFDF6" stroke="#1C3B37" stroke-width="1.1"/>
-    <circle cx="27" cy="62" r="4.6" fill="#F0A0A8" opacity=".55"/>
-    <circle cx="73" cy="62" r="4.6" fill="#F0A0A8" opacity=".55"/>
+    <circle cx="24" cy="26" r="9" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.6"/>
+    <circle cx="76" cy="26" r="9" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.6"/>
+    <circle cx="24" cy="26" r="3.8" fill="#F0A0A8" opacity=".7"/>
+    <circle cx="76" cy="26" r="3.8" fill="#F0A0A8" opacity=".7"/>
+    <ellipse cx="50" cy="60" rx="31" ry="28" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.8"/>
+    <ellipse cx="50" cy="81" rx="16" ry="8" fill="#F6E7C6" opacity=".95"/>
+    <ellipse cx="50" cy="62" rx="15" ry="11" fill="#F7EAD0" stroke="#2F5A54" stroke-width="2.1"/>
+    <path d="M34 49 q6.5 -6.5 13 0" stroke="#1C3B37" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <path d="M53 49 q6.5 -6.5 13 0" stroke="#1C3B37" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <path d="M47 56 h6 l-3 3.6 z" fill="#1C3B37"/>
+    <path d="M43 64 q7 6 14 0" stroke="#1C3B37" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M45.4 65.2 l1.6 3.4 1.7 -2.9" fill="#FFFDF6" stroke="#1C3B37" stroke-width=".9"/>
+    <path d="M54.6 65.2 l-1.6 3.4 -1.7 -2.9" fill="#FFFDF6" stroke="#1C3B37" stroke-width=".9"/>
+    <circle cx="28" cy="63" r="4.4" fill="#F0A0A8" opacity=".5"/>
+    <circle cx="72" cy="63" r="4.4" fill="#F0A0A8" opacity=".5"/>
   </svg>`,
   mom: `
   <svg viewBox="0 0 100 100" role="img" aria-label="다정한 여우 캐릭터">
@@ -458,7 +463,7 @@ const CHARS = {
     <path d="M70 40 C75 27 78 17 74 15 c-3 -1 -7 9 -10 20 z" fill="#C08B5C" opacity=".85"/>
     <path d="M50 30 q7 -9 13 -2 q-2 7 -13 8 q-11 -1 -13 -8 q6 -7 13 2" fill="#F7E4C4" stroke="#8B5E34" stroke-width="2.2" stroke-linejoin="round"/>
     <ellipse cx="50" cy="60" rx="26" ry="24" fill="#F2D9B0" stroke="#8B5E34" stroke-width="2.8"/>
-    <path d="M24 72 q7 11 13 2 q7 11 13 2 q7 11 13 2 q7 9 13 -2" fill="#FFF7E6" stroke="#8B5E34" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M24 73 q7 12 13 3 q7 12 13 3 q7 12 13 3 q7 10 13 -3" fill="#FFFFFF" stroke="#8B5E34" stroke-width="2.3" stroke-linejoin="round"/>
     <ellipse cx="40" cy="57" rx="5.2" ry="6" fill="#5B3B1E"/>
     <ellipse cx="60" cy="57" rx="5.2" ry="6" fill="#5B3B1E"/>
     <circle cx="41.8" cy="54.6" r="1.9" fill="#fff"/>
@@ -545,8 +550,12 @@ function itemHTML(m, it){
       role="checkbox" aria-checked="${it.done}" aria-label="${esc(it.text)} ${it.done ? "완료 취소" : "완료 체크"}">${checkSvg(it.done)}</button>
     <span class="item-text">${esc(it.text)}</span>
     <span class="item-actions">
-      <button type="button" class="icon-btn" data-action="edit" data-mid="${m.id}" data-iid="${esc(it.id)}" aria-label="수정">✏️</button>
-      <button type="button" class="icon-btn del" data-action="del" data-mid="${m.id}" data-iid="${esc(it.id)}" aria-label="삭제">✕</button>
+      <button type="button" class="icon-btn" data-action="edit" data-mid="${m.id}" data-iid="${esc(it.id)}" aria-label="수정">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20.5l4.2-.9L20 7.8a2.6 2.6 0 0 0-3.7-3.7L4.9 15.9 4 20.5z"/><path d="M14.6 5.8l3.6 3.6"/></svg>
+      </button>
+      <button type="button" class="icon-btn del" data-action="del" data-mid="${m.id}" data-iid="${esc(it.id)}" aria-label="삭제">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+      </button>
     </span>
   </li>`;
 }
