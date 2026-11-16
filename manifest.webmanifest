@@ -1,0 +1,17 @@
+{
+  "name": "우리 가족 포켓몬고 To Do",
+  "short_name": "가족 To Do",
+  "description": "우리 가족이 함께 쓰는 실시간 할 일 대시보드",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF9EE",
+  "theme_color": "#FFD93B",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

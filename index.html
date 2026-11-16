@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>⚡ 우리 가족 포켓몬고 To Do</title>
+<meta name="description" content="우리 가족이 함께 쓰는 실시간 할 일 대시보드">
+<meta name="theme-color" content="#FFD93B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="가족 To Do">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:title" content="⚡ 우리 가족 포켓몬고 To Do">
+<meta property="og:description" content="우리 가족이 함께 쓰는 실시간 할 일 대시보드">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<script>
+/* 화면 오류 기록(점검용): 문제가 생기면 window.__errs 에 쌓입니다. */
+window.__errs = [];
+window.addEventListener("error", function (e) {
+  window.__errs.push("error: " + (e.message || e.error || "unknown"));
+});
+window.addEventListener("unhandledrejection", function (e) {
+  var r = e.reason;
+  window.__errs.push("rejection: " + ((r && r.message) || r || "unknown"));
+});
+</script>
+<style>
+:root{
+  --ink:#2F2A22;
+  --muted:#8A7E6D;
+  --line:#EADFCB;
+  --cream:#FFF9EE;
+  --yellow:#FFD93B;
+  --red:#FF5A5F;
+  --green:#2E9E6B;
+  --card-radius:24px;
+  --shadow:0 10px 24px rgba(126,96,44,.10);
+  --shadow-sm:0 3px 10px rgba(126,96,44,.09);
+  --font-title:"Jua","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--cream);
+  background-image:
+    radial-gradient(circle at 12% 4%, #FFF3C0 0%, rgba(255,243,192,0) 42%),
+    radial-gradient(circle at 92% 16%, #DFF3EE 0%, rgba(223,243,238,0) 38%),
+    radial-gradient(circle at 50% 100%, #FFE6E6 0%, rgba(255,230,230,0) 46%);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.5;
+  min-height:100vh;
+  padding-bottom:calc(28px + env(safe-area-inset-bottom));
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:520px;margin:0 auto;padding:0 14px}
+
+/* ---------- header ---------- */
+.app-header{
+  position:sticky;top:0;z-index:30;
+  padding:calc(10px + env(safe-area-inset-top)) 0 10px;
+  background:linear-gradient(180deg,rgba(255,249,238,.97) 62%,rgba(255,249,238,.72) 88%,rgba(255,249,238,0));
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.header-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+h1{
+  font-family:var(--font-title);
+  font-size:20px;line-height:1.25;margin:0;font-weight:400;
+  letter-spacing:-.2px;
+}
+h1 .bolt{color:#F2B705}
+.sync-badge{
+  display:inline-flex;align-items:center;gap:5px;flex:none;
+  font-size:11.5px;font-weight:700;color:#2E7D5B;
+  background:#E6F6EC;border:1px solid #C6EBD6;border-radius:999px;
+  padding:5px 9px;white-space:nowrap;
+}
+.sync-badge .dot{width:7px;height:7px;border-radius:50%;background:#35C46B;box-shadow:0 0 0 0 rgba(53,196,107,.6);animation:pulse 2s infinite}
+.sync-badge.off{color:#9A6B12;background:#FFF4DC;border-color:#F6E0B0}
+.sync-badge.off .dot{background:#F0A93B;animation:none}
+.sync-badge.err{color:#B23A3A;background:#FDE9E9;border-color:#F7C9C9}
+.sync-badge.err .dot{background:#E04B4B;animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(53,196,107,.55)}70%{box-shadow:0 0 0 6px rgba(53,196,107,0)}100%{box-shadow:0 0 0 0 rgba(53,196,107,0)}}
+
+.summary{
+  background:#fff;border:1.5px solid var(--line);border-radius:18px;
+  padding:11px 14px;box-shadow:var(--shadow-sm);
+}
+.summary-line{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.summary-main{font-family:var(--font-title);font-size:15px;color:#43382A}
+.summary-main b{color:#E08A00;font-size:17px}
+.summary-note{font-size:11.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.summary-bar{height:8px;border-radius:999px;background:#F3EBDD;margin-top:8px;overflow:hidden}
+.summary-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#FFD93B,#FFB627);transition:width .45s cubic-bezier(.3,1.2,.4,1)}
+.summary.all-done{background:linear-gradient(135deg,#FFF8D6,#FFF0B8);border-color:#F5D96A}
+
+/* ---------- cards ---------- */
+#board{margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.card{
+  position:relative;
+  border-radius:var(--card-radius);
+  padding:13px 13px 12px;
+  border:1.5px solid rgba(120,96,60,.13);
+  box-shadow:var(--shadow);
+  animation:rise .45s cubic-bezier(.2,.9,.3,1) both;
+  overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;right:-26px;top:-30px;width:110px;height:110px;border-radius:50%;
+  background:rgba(255,255,255,.45);pointer-events:none;
+}
+.card.dad{background:linear-gradient(160deg,#E4F3EE,#D6EBE6)}
+.card.mom{background:linear-gradient(160deg,#FFF2E0,#FFE8CF)}
+.card.son{background:linear-gradient(160deg,#FFFBDF,#FFF2B8)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.card-head{display:flex;align-items:center;gap:10px;position:relative}
+.avatar{
+  width:52px;height:52px;flex:none;border-radius:50%;
+  background:rgba(255,255,255,.72);
+  border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 3px 8px rgba(120,96,60,.12);
+  display:grid;place-items:center;
+}
+.avatar svg{width:44px;height:44px;display:block}
+.who{min-width:0;flex:1}
+.who .name{font-family:var(--font-title);font-size:18px;line-height:1.15;color:#3B3125;display:flex;align-items:center;gap:6px}
+.who .tag{font-size:11.5px;color:#7E7364;margin-top:1px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trophy{
+  font-size:10.5px;font-weight:800;color:#8A5B00;background:#FFE9A8;
+  border-radius:999px;padding:2px 7px;flex:none;
+}
+.progress{text-align:right;flex:none}
+.progress .num{font-family:var(--font-title);font-size:14px;color:#4A4034;white-space:nowrap}
+.progress .num b{font-size:17px;color:#2F2A22}
+.card-bar{height:7px;border-radius:999px;background:rgba(255,255,255,.75);margin:10px 0 4px;overflow:hidden}
+.card-bar i{display:block;height:100%;width:0;border-radius:999px;transition:width .45s cubic-bezier(.3,1.2,.4,1)}
+.card.dad .card-bar i{background:linear-gradient(90deg,#6FC3B0,#3F9C88)}
+.card.mom .card-bar i{background:linear-gradient(90deg,#FFB870,#F08A3C)}
+.card.son .card-bar i{background:linear-gradient(90deg,#FFD93B,#F5B301)}
+
+/* ---------- items ---------- */
+.items{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+.item{
+  display:flex;align-items:flex-start;gap:9px;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:15px;padding:9px 9px 9px 10px;
+  box-shadow:0 1px 4px rgba(120,96,60,.06);
+  transition:background .2s,opacity .2s;
+}
+.item.done{background:rgba(255,255,255,.55)}
+.check{
+  width:30px;height:30px;flex:none;border:0;background:none;padding:0;cursor:pointer;
+  display:grid;place-items:center;border-radius:50%;
+  transition:transform .15s;
+}
+.check:active{transform:scale(.86)}
+.check svg{width:26px;height:26px;display:block}
+.item-text{
+  flex:1;min-width:0;font-size:14px;line-height:1.42;color:#332D24;
+  word-break:keep-all;overflow-wrap:anywhere;padding-top:4px;
+  transition:color .2s,opacity .2s;
+}
+.item.done .item-text{color:#948A7C;text-decoration:line-through;text-decoration-thickness:1.6px;text-decoration-color:#C3B6A2;opacity:.85}
+.item-actions{display:flex;gap:2px;flex:none;padding-top:2px}
+.icon-btn{
+  width:28px;height:28px;flex:none;border:0;background:none;border-radius:9px;
+  font-size:13px;line-height:1;color:#8B8072;cursor:pointer;display:grid;place-items:center;
+  transition:background .15s,color .15s;
+}
+.icon-btn:hover{background:rgba(120,96,60,.09)}
+.icon-btn.del{font-size:15px;font-weight:700;color:#A9977F}
+.item.confirming{background:#FDEDED;border-color:#F6D2D2}
+.confirm-btn{
+  flex:none;border:0;border-radius:10px;padding:7px 10px;font-size:12.5px;font-weight:800;
+  font-family:var(--font-body);background:#FF5A5F;color:#fff;cursor:pointer;
+}
+.confirm-cancel{
+  flex:none;border:0;border-radius:10px;padding:7px 9px;font-size:12.5px;font-weight:700;
+  background:rgba(255,255,255,.9);color:#7E7364;cursor:pointer;
+}
+
+/* inline editor / adder */
+.edit-row{display:flex;gap:6px;align-items:center;width:100%;flex:1 1 auto;min-width:0}
+.edit-row input{
+  flex:1;min-width:0;font-family:var(--font-body);font-size:14px;color:#2F2A22;
+  border:1.5px solid #E2D5BE;border-radius:11px;padding:8px 10px;background:#fff;outline:none;
+}
+.edit-row input:focus{border-color:#FFC83D;box-shadow:0 0 0 3px rgba(255,200,61,.25)}
+.mini-btn{
+  flex:none;border:0;border-radius:11px;padding:8px 11px;font-size:12.5px;font-weight:800;
+  font-family:var(--font-body);cursor:pointer;
+}
+.mini-btn.save{background:#2F2A22;color:#fff}
+.mini-btn.cancel{background:rgba(255,255,255,.9);color:#7E7364;border:1px solid #E7DCC7}
+
+.add-btn{
+  width:100%;margin-top:9px;border:1.7px dashed rgba(120,96,60,.32);background:rgba(255,255,255,.5);
+  border-radius:14px;padding:10px;font-family:var(--font-title);font-size:14px;color:#6C6151;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:background .15s,border-color .15s;
+}
+.add-btn:hover{background:rgba(255,255,255,.85);border-color:rgba(120,96,60,.5)}
+.add-btn .plus{font-size:16px;line-height:1}
+.empty{
+  text-align:center;font-size:12.5px;color:#8B8072;padding:12px 6px 8px;line-height:1.6;
+}
+
+/* ---------- footer ---------- */
+.foot{margin-top:18px;text-align:center;font-size:11px;color:#A99C88;line-height:1.7}
+.foot .ball{display:inline-block;transform:translateY(1px)}
+
+/* ---------- celebration banner ---------- */
+#banner{
+  position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top));
+  transform:translate(-50%,-170%);
+  width:min(94vw,470px);z-index:60;
+  background:linear-gradient(120deg,#FFE86B,#FFC93C 55%,#FFD95E);
+  border:2px solid #fff;border-radius:18px;
+  box-shadow:0 12px 26px rgba(190,140,0,.28);
+  padding:11px 15px;text-align:center;
+  font-family:var(--font-title);font-size:15px;color:#4A3400;
+  transition:transform .42s cubic-bezier(.2,1.5,.4,1);
+  pointer-events:none;
+}
+#banner.show{transform:translate(-50%,0)}
+#banner .spark{position:absolute;font-size:12px;opacity:0;animation:twinkle 1.1s ease-in-out infinite}
+#banner .s1{left:8px;top:2px;animation-delay:0s}
+#banner .s2{right:9px;top:4px;animation-delay:.35s}
+#banner .s3{right:34px;bottom:-2px;animation-delay:.7s}
+#banner .s4{left:32px;bottom:-3px;animation-delay:.5s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.6)}45%{opacity:1;transform:scale(1.15)}}
+
+/* ---------- hi-five popup ---------- */
+#hifive{
+  position:fixed;inset:0;z-index:70;display:grid;place-items:center;
+  background:rgba(48,34,10,.34);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+#hifive.show{opacity:1;pointer-events:auto}
+.hifive-card{
+  position:relative;width:min(78vw,300px);
+  background:radial-gradient(circle at 50% 0%,#FFFDF2,#FFF6D9 70%);
+  border:3px solid #fff;border-radius:30px;
+  padding:20px 18px 16px;text-align:center;
+  box-shadow:0 20px 44px rgba(60,40,0,.30);
+  transform:scale(.82);transition:transform .3s cubic-bezier(.2,1.5,.4,1);
+}
+#hifive.show .hifive-card{transform:scale(1)}
+.hifive-char{
+  width:104px;height:104px;margin:0 auto 6px;
+  animation:hop .56s cubic-bezier(.3,1.4,.5,1) infinite alternate;
+}
+.hifive-char svg{width:100%;height:100%;display:block}
+@keyframes hop{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-10px) rotate(4deg)}}
+.hifive-msg{font-family:var(--font-title);font-size:26px;color:#3A2E12;margin:2px 0 0;letter-spacing:-.3px}
+.hifive-sub{font-size:12px;color:#9A8A66;margin-top:7px}
+.hifive-ring{position:absolute;inset:-14px;pointer-events:none}
+.ring-star{position:absolute;font-size:16px;animation:popStar 1.3s ease-in-out infinite}
+.ring-star.a{left:-4px;top:18%}
+.ring-star.b{right:2px;top:8%;animation-delay:.2s}
+.ring-star.c{right:10%;bottom:12%;animation-delay:.45s}
+.ring-star.d{left:6%;bottom:16%;animation-delay:.65s}
+@keyframes popStar{0%,100%{opacity:0;transform:scale(.5) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(18deg)}}
+
+.loading{text-align:center;color:#9A8E7C;font-size:13px;padding:26px 0}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+@media (max-width:360px){
+  h1{font-size:17px}
+  .sync-badge{font-size:10.5px;padding:4px 7px}
+  .avatar{width:46px;height:46px}
+  .avatar svg{width:39px;height:39px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="app-header">
+    <div class="header-top">
+      <h1><span class="bolt">⚡</span> 우리 가족 포켓몬고 To Do</h1>
+      <span id="sync" class="sync-badge off"><span class="dot"></span><span id="sync-text">연결 중…</span></span>
+    </div>
+    <div class="summary" id="summary">
+      <div class="summary-line">
+        <span class="summary-main" id="summary-main">할 일을 불러오는 중…</span>
+        <span class="summary-note" id="summary-note"></span>
+      </div>
+      <div class="summary-bar"><i id="summary-fill"></i></div>
+    </div>
+  </header>
+
+  <main id="board" aria-live="polite">
+    <div class="loading">가족 보드를 불러오고 있어요…</div>
+  </main>
+
+  <p class="foot">
+    <span class="ball">⚪</span> 우리 가족만 쓰는 보드예요 · 누르면 바로 모든 휴대폰에 반영돼요
+  </p>
+</div>
+
+<div id="banner" role="status" aria-live="polite"></div>
+
+<div id="hifive" role="dialog" aria-modal="true" aria-label="완료 축하">
+  <div class="hifive-card">
+    <div class="hifive-ring" aria-hidden="true">
+      <span class="ring-star a">✨</span><span class="ring-star b">⭐</span>
+      <span class="ring-star c">✨</span><span class="ring-star d">💫</span>
+    </div>
+    <div class="hifive-char" id="hifive-char"></div>
+    <p class="hifive-msg">하이파이브! ⚡</p>
+    <p class="hifive-sub">탭하면 닫혀요</p>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getDatabase, ref, onValue, set, update, push, remove }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+/* ------------------------------------------------------------------ */
+/*  설정                                                               */
+/* ------------------------------------------------------------------ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBvYAgtN_RL0qiSc4dyCznyx3G8iFKLyo0",
+  authDomain: "family-dashboard-72c64.firebaseapp.com",
+  databaseURL: "https://family-dashboard-72c64-default-rtdb.firebaseio.com",
+  projectId: "family-dashboard-72c64",
+  storageBucket: "family-dashboard-72c64.firebasestorage.app",
+  messagingSenderId: "471246003291",
+  appId: "1:471246003291:web:f600815902f2c5c6c1737e"
+};
+
+const DB_ROOT = "family_board/v1";          // 이 경로만 사용합니다.
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+const rootRef = ref(db, DB_ROOT);
+
+/* 구성원 정의 (이름 외 개인정보는 담지 않습니다) */
+const MEMBERS = [
+  { id:"dad", name:"아빠", cls:"dad", tag:"든든한 우리 집 수호자" },
+  { id:"mom", name:"엄마", cls:"mom", tag:"다정한 우리 집 응원단" },
+  { id:"son", name:"아들", cls:"son", tag:"기말고사 파이팅!" }
+];
+
+/* 첫 시드 데이터 — 과목별 기말고사 대비 To Do */
+const SEED_ITEMS = {
+  dad: [
+    "기말고사 응원 간식 챙기기",
+    "시험 기간 조용한 공부 분위기 만들기"
+  ],
+  mom: [
+    "아침밥·비타민 챙겨주기",
+    "시험 일정표 확인하고 응원하기"
+  ],
+  son: [
+    "국어 (12/7) · 1-(1) 동백꽃(p.14~36) · (2) 토의하기(p.46~57) 복습",
+    "국어 (12/7) · 3-(1) 단어의 짜임과 새말(p.114~133) + 학습지",
+    "과학 (12/7) · II. 생물의 구성과 다양성(p.38~77 + 학습지 1~8)",
+    "과학 (12/7) · VII. 태양계(p.228~261 + 학습지 28~35)",
+    "사회 (12/8) · VIII. 다양한 문화의 이해(p.146~161)",
+    "사회 (12/8) · XI. 일상생활과 법(p.202~217) + XII. 인권과 기본권(p.220~237)",
+    "도덕 (12/9) · II-3. 가상공간 ~ IV. 자연과의 관계(p.100~195) & 학습지"
+  ]
+};
+
+function buildSeed(){
+  const members = {};
+  for (const m of MEMBERS){
+    const items = {};
+    (SEED_ITEMS[m.id] || []).forEach((text, i) => {
+      items[m.id + "-" + (i + 1)] = { text, done:false, order: i + 1 };
+    });
+    members[m.id] = { name: m.name, items };
+  }
+  return {
+    meta: { initialized: true, version: 1, seededFor: "2026-2학기 기말고사", createdAt: 1770000000000 },
+    members
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/*  상태                                                               */
+/* ------------------------------------------------------------------ */
+const ui = {
+  data: null,
+  ready: false,
+  connected: false,
+  error: null,
+  seeded: false,
+  editing: null,      // { mid, iid, value }
+  adding: null,       // mid
+  addValue: "",
+  pendingDelete: null,// "mid/iid"
+  dirty: false
+};
+
+const $ = (id) => document.getElementById(id);
+const board      = $("board");
+const syncBadge  = $("sync");
+const syncText   = $("sync-text");
+const banner     = $("banner");
+const hifive     = $("hifive");
+const hifiveChar = $("hifive-char");
+const summaryEl  = $("summary");
+const summaryMain= $("summary-main");
+const summaryNote= $("summary-note");
+const summaryFill= $("summary-fill");
+
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const itemPath = (mid, iid) => `${DB_ROOT}/members/${mid}/items/${iid}`;
+const itemsPath = (mid) => `${DB_ROOT}/members/${mid}/items`;
+
+/* ------------------------------------------------------------------ */
+/*  캐릭터 SVG (아빠=잠만보 느낌 곰, 엄마=이브이 느낌, 아들=피카츄 느낌)   */
+/* ------------------------------------------------------------------ */
+const CHARS = {
+  dad: `
+  <svg viewBox="0 0 100 100" role="img" aria-label="듬직한 곰 캐릭터">
+    <ellipse cx="50" cy="94" rx="27" ry="4" fill="#2F5A54" opacity=".14"/>
+    <path d="M23 33 q-3 -12 8 -14 q4 8 1 15 z" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M77 33 q3 -12 -8 -14 q-4 8 -1 15 z" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.4" stroke-linejoin="round"/>
+    <ellipse cx="50" cy="60" rx="32" ry="29" fill="#4C8C82" stroke="#2F5A54" stroke-width="2.8"/>
+    <ellipse cx="50" cy="70" rx="19" ry="15" fill="#F6E7C6"/>
+    <path d="M31 72 q6 5 12 1" stroke="#2F5A54" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M69 72 q-6 5 -12 1" stroke="#2F5A54" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M35 50 q7 -6 14 0" stroke="#1C3B37" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <path d="M51 50 q7 -6 14 0" stroke="#1C3B37" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <path d="M43 59 q7 6 14 0" stroke="#1C3B37" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M47 59 h3 v4 h-3 z M50 59 h3 v4 h-3 z" fill="#FFFDF6" stroke="#1C3B37" stroke-width="1.1"/>
+    <circle cx="27" cy="62" r="4.6" fill="#F0A0A8" opacity=".55"/>
+    <circle cx="73" cy="62" r="4.6" fill="#F0A0A8" opacity=".55"/>
+  </svg>`,
+  mom: `
+  <svg viewBox="0 0 100 100" role="img" aria-label="다정한 여우 캐릭터">
+    <ellipse cx="50" cy="95" rx="25" ry="3.6" fill="#8B5E34" opacity=".14"/>
+    <path d="M31 48 C22 30 17 13 24 9 c6 -3 12 11 16 27 z" fill="#E9C79B" stroke="#8B5E34" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M69 48 C78 30 83 13 76 9 c-6 -3 -12 11 -16 27 z" fill="#E9C79B" stroke="#8B5E34" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M30 40 C25 27 22 17 26 15 c3 -1 7 9 10 20 z" fill="#C08B5C" opacity=".85"/>
+    <path d="M70 40 C75 27 78 17 74 15 c-3 -1 -7 9 -10 20 z" fill="#C08B5C" opacity=".85"/>
+    <path d="M50 30 q7 -9 13 -2 q-2 7 -13 8 q-11 -1 -13 -8 q6 -7 13 2" fill="#F7E4C4" stroke="#8B5E34" stroke-width="2.2" stroke-linejoin="round"/>
+    <ellipse cx="50" cy="60" rx="26" ry="24" fill="#F2D9B0" stroke="#8B5E34" stroke-width="2.8"/>
+    <path d="M24 72 q7 11 13 2 q7 11 13 2 q7 11 13 2 q7 9 13 -2" fill="#FFF7E6" stroke="#8B5E34" stroke-width="2.4" stroke-linejoin="round"/>
+    <ellipse cx="40" cy="57" rx="5.2" ry="6" fill="#5B3B1E"/>
+    <ellipse cx="60" cy="57" rx="5.2" ry="6" fill="#5B3B1E"/>
+    <circle cx="41.8" cy="54.6" r="1.9" fill="#fff"/>
+    <circle cx="61.8" cy="54.6" r="1.9" fill="#fff"/>
+    <path d="M50 63.5 l-3.2 -3 h6.4 z" fill="#6B4226"/>
+    <path d="M45.5 67 q4.5 4 9 0" stroke="#6B4226" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <circle cx="31" cy="64" r="4.2" fill="#F3A0A8" opacity=".5"/>
+    <circle cx="69" cy="64" r="4.2" fill="#F3A0A8" opacity=".5"/>
+  </svg>`,
+  son: `
+  <svg viewBox="0 0 100 100" role="img" aria-label="활발한 피카츄 캐릭터">
+    <ellipse cx="50" cy="95" rx="24" ry="3.4" fill="#C89B00" opacity=".16"/>
+    <path d="M72 74 l14 -7 -4 11 11 3 -18 12 -7 -12 z" fill="#FFD93B" stroke="#C89B00" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M32 52 L23 13 q-1 -5 3 -5 q4 0 6 5 l8 34 z" fill="#FFD93B" stroke="#C89B00" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M68 52 L77 13 q1 -5 -3 -5 q-4 0 -6 5 l-8 34 z" fill="#FFD93B" stroke="#C89B00" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M24.5 13.5 L28 27" stroke="#3B2A0B" stroke-width="6" stroke-linecap="round"/>
+    <path d="M75.5 13.5 L72 27" stroke="#3B2A0B" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="50" cy="62" rx="27" ry="26" fill="#FFD93B" stroke="#C89B00" stroke-width="2.8"/>
+    <circle cx="32" cy="68" r="6.4" fill="#FF8A65" opacity=".9"/>
+    <circle cx="68" cy="68" r="6.4" fill="#FF8A65" opacity=".9"/>
+    <circle cx="40" cy="55" r="4.7" fill="#3B2A0B"/>
+    <circle cx="60" cy="55" r="4.7" fill="#3B2A0B"/>
+    <circle cx="41.7" cy="53.3" r="1.7" fill="#fff"/>
+    <circle cx="61.7" cy="53.3" r="1.7" fill="#fff"/>
+    <path d="M44.5 64 q2.7 3.2 5.5 0 q2.7 3.2 5.5 0" stroke="#3B2A0B" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`
+};
+
+/* ------------------------------------------------------------------ */
+/*  렌더링                                                             */
+/* ------------------------------------------------------------------ */
+function membersOf(data){
+  return (data && data.members) || {};
+}
+
+function sortedItems(data, mid){
+  const raw = (membersOf(data)[mid] || {}).items || {};
+  return Object.entries(raw)
+    .map(([id, it]) => ({ id, text: String(it && it.text != null ? it.text : ""), done: !!(it && it.done), order: Number(it && it.order) || 0 }))
+    .sort((a, b) => (a.order - b.order) || a.text.localeCompare(b.text));
+}
+
+function checkSvg(done){
+  if (done){
+    return `<svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="10.6" fill="#fff" stroke="#2F2A22" stroke-width="1.7"/>
+      <path d="M1.4 12 a10.6 10.6 0 0 1 21.2 0 z" fill="#FF5A5F"/>
+      <path d="M1.4 12 h21.2" stroke="#2F2A22" stroke-width="1.7"/>
+      <circle cx="12" cy="12" r="4.4" fill="#fff" stroke="#2F2A22" stroke-width="1.5"/>
+      <path d="M9.7 12.1 l1.6 1.6 3.1 -3.3" stroke="#2E9E6B" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" fill="#fff" stroke="#CFC3B2" stroke-width="2" stroke-dasharray="3.2 3.2" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function editorRow(kind, mid, iid, value){
+  return `<div class="edit-row">
+    <input type="text" data-editor data-kind="${kind}" data-mid="${mid}" ${iid ? `data-iid="${esc(iid)}"` : ""}
+      value="${esc(value || "")}" placeholder="${kind === "add" ? "할 일을 입력해 주세요" : "수정할 내용"}" enterkeyhint="done"
+      maxlength="120" autocomplete="off" aria-label="${kind === "add" ? "새 할 일" : "할 일 수정"}">
+    <button type="button" class="mini-btn save" data-action="${kind === "add" ? "add-save" : "edit-save"}" data-mid="${mid}" ${iid ? `data-iid="${esc(iid)}"` : ""}>저장</button>
+    <button type="button" class="mini-btn cancel" data-action="${kind === "add" ? "add-cancel" : "edit-cancel"}">취소</button>
+  </div>`;
+}
+
+function itemHTML(m, it){
+  const editing = ui.editing && ui.editing.mid === m.id && ui.editing.iid === it.id;
+  const confirming = ui.pendingDelete === m.id + "/" + it.id;
+
+  if (editing){
+    return `<li class="item">${editorRow("edit", m.id, it.id, ui.editing.value)}</li>`;
+  }
+  if (confirming){
+    return `<li class="item confirming" data-key="${esc(it.id)}">
+      <span class="item-text">이 할 일을 지울까요?</span>
+      <button type="button" class="confirm-btn" data-action="del-yes" data-mid="${m.id}" data-iid="${esc(it.id)}">삭제</button>
+      <button type="button" class="confirm-cancel" data-action="del-no" data-mid="${m.id}" data-iid="${esc(it.id)}">취소</button>
+    </li>`;
+  }
+  return `<li class="item${it.done ? " done" : ""}" data-key="${esc(it.id)}">
+    <button type="button" class="check" data-action="toggle" data-mid="${m.id}" data-iid="${esc(it.id)}"
+      role="checkbox" aria-checked="${it.done}" aria-label="${esc(it.text)} ${it.done ? "완료 취소" : "완료 체크"}">${checkSvg(it.done)}</button>
+    <span class="item-text">${esc(it.text)}</span>
+    <span class="item-actions">
+      <button type="button" class="icon-btn" data-action="edit" data-mid="${m.id}" data-iid="${esc(it.id)}" aria-label="수정">✏️</button>
+      <button type="button" class="icon-btn del" data-action="del" data-mid="${m.id}" data-iid="${esc(it.id)}" aria-label="삭제">✕</button>
+    </span>
+  </li>`;
+}
+
+function cardHTML(m, items, doneCount){
+  const total = items.length;
+  const pct = total ? Math.round(doneCount / total * 100) : 0;
+  const allDone = total > 0 && doneCount === total;
+  const adding = ui.adding === m.id;
+
+  const body = items.map(it => itemHTML(m, it)).join("");
+  const list = total
+    ? `<ul class="items">${body}${adding ? `<li class="item">${editorRow("add", m.id, null, ui.addValue || "")}</li>` : ""}</ul>`
+    : (adding
+        ? `<ul class="items"><li class="item">${editorRow("add", m.id, null, ui.addValue || "")}</li></ul>`
+        : `<p class="empty">아직 할 일이 없어요.<br>아래 버튼으로 하나 추가해 볼까요?</p>`);
+
+  return `<section class="card ${m.cls}" data-mid="${m.id}" aria-label="${m.name} 할 일">
+    <div class="card-head">
+      <div class="avatar">${CHARS[m.id]}</div>
+      <div class="who">
+        <div class="name">${m.name}${allDone ? `<span class="trophy">🏆 완료!</span>` : ""}</div>
+        <span class="tag">${m.tag}</span>
+      </div>
+      <div class="progress"><div class="num"><b>${doneCount}</b>/${total}개 완료</div></div>
+    </div>
+    <div class="card-bar" role="img" aria-label="${m.name} 진행률 ${pct}%"><i style="width:${pct}%"></i></div>
+    ${list}
+    ${adding ? "" : `<button type="button" class="add-btn" data-action="add" data-mid="${m.id}"><span class="plus">＋</span> ${m.name} 할 일 추가</button>`}
+  </section>`;
+}
+
+/* 추가 입력 중이던 값은 새 입력창에도 이어지게 합니다. */
+function render(){
+  if (!ui.ready) return;
+  const data = ui.data;
+  let totalAll = 0, doneAll = 0;
+
+  // 편집 중이던 입력값을 잃지 않도록 DOM의 최신 값을 보관합니다.
+  const liveInput = board.querySelector("[data-editor]");
+  if (liveInput){
+    if (liveInput.dataset.kind === "edit" && ui.editing) ui.editing.value = liveInput.value;
+    if (liveInput.dataset.kind === "add") ui.addValue = liveInput.value;
+  }
+  // 다른 기기에서 지워진 항목을 편집 중이었다면 편집 상태를 정리합니다.
+  if (ui.editing && !sortedItems(data, ui.editing.mid).some(i => i.id === ui.editing.iid)){
+    ui.editing = null;
+  }
+
+  const html = MEMBERS.map(m => {
+    const items = sortedItems(data, m.id);
+    const done = items.filter(i => i.done).length;
+    totalAll += items.length; doneAll += done;
+    return cardHTML(m, items, done);
+  }).join("");
+
+  board.innerHTML = html;
+
+  const pct = totalAll ? Math.round(doneAll / totalAll * 100) : 0;
+  const left = totalAll - doneAll;
+  if (totalAll === 0){
+    summaryMain.textContent = "오늘 할 일을 추가해 보세요";
+    summaryNote.textContent = "";
+  } else if (left === 0){
+    summaryMain.innerHTML = `오늘 <b>${doneAll}/${totalAll}</b> 모두 잡았다! 🏆`;
+    summaryNote.textContent = "가족 모두 수고했어요";
+  } else {
+    summaryMain.innerHTML = `오늘 <b>${doneAll}/${totalAll}</b> 완료`;
+    summaryNote.textContent = `남은 ${left}개 파이팅!`;
+  }
+  summaryFill.style.width = pct + "%";
+  summaryEl.classList.toggle("all-done", totalAll > 0 && left === 0);
+
+  // 입력 중이던 편집기는 포커스와 커서를 되살립니다.
+  const editor = board.querySelector("[data-editor]");
+  if (editor){
+    editor.focus();
+    const v = editor.value;
+    try { editor.setSelectionRange(v.length, v.length); } catch (e) {}
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  축하 인터랙션                                                       */
+/* ------------------------------------------------------------------ */
+let bannerTimer = null, hifiveTimer = null;
+
+function celebrate(mid, text){
+  const short = text.length > 26 ? text.slice(0, 25) + "…" : text;
+  banner.innerHTML = `<span class="spark s1">✨</span><span class="spark s2">⭐</span>
+    <span class="spark s3">✨</span><span class="spark s4">💫</span>
+    나이스! ✨ '${esc(short)}' 잡았다!`;
+  banner.classList.add("show");
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(() => banner.classList.remove("show"), 2800);
+
+  hifiveChar.innerHTML = CHARS[mid] || CHARS.son;
+  hifive.classList.add("show");
+  clearTimeout(hifiveTimer);
+  hifiveTimer = setTimeout(closeHifive, 2200);
+}
+
+function closeHifive(){
+  hifive.classList.remove("show");
+  clearTimeout(hifiveTimer);
+}
+
+hifive.addEventListener("click", closeHifive);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape"){
+    if (hifive.classList.contains("show")) closeHifive();
+    if (ui.editing || ui.adding){ ui.editing = null; ui.adding = null; ui.addValue = ""; render(); }
+    if (ui.pendingDelete){ ui.pendingDelete = null; render(); }
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/*  동기화 상태                                                        */
+/* ------------------------------------------------------------------ */
+function setSync(state, msg){
+  syncBadge.classList.remove("off", "err");
+  if (state === "on"){
+    syncText.textContent = "🟢 실시간 동기화 중";
+  } else if (state === "err"){
+    syncBadge.classList.add("err");
+    syncText.textContent = msg || "동기화 오류";
+  } else {
+    syncBadge.classList.add("off");
+    syncText.textContent = msg || "연결 중…";
+  }
+}
+
+onValue(ref(db, ".info/connected"), (snap) => {
+  ui.connected = snap.val() === true;
+  if (!ui.error) setSync(ui.connected ? "on" : "off");
+});
+
+function readError(err){
+  ui.error = err;
+  setSync("err", "동기화 오류");
+  console.error("[family-board]", err);
+}
+
+/* ------------------------------------------------------------------ */
+/*  실시간 구독 + 1회 시드                                              */
+/* ------------------------------------------------------------------ */
+onValue(rootRef, async (snapshot) => {
+  let val = snapshot.val();
+
+  // DB가 완전히 비었을 때만, 딱 한 번 기본 데이터를 넣습니다.
+  // meta 노드가 함께 저장되므로 사용자가 항목을 모두 지워도 root가 null이 되지 않습니다.
+  if (val === null && !ui.seeded){
+    ui.seeded = true;
+    try {
+      await set(rootRef, buildSeed());
+      return; // set()의 결과가 onValue로 다시 들어옵니다.
+    } catch (err){
+      readError(err);
+    }
+  }
+
+  ui.data = val || {};
+  ui.ready = true;
+  ui.error = null;
+  if (!ui.editing && !ui.adding) render();
+  else ui.dirty = true;
+}, (err) => {
+  ui.ready = true;
+  readError(err);
+  board.innerHTML = `<div class="loading">보드를 불러오지 못했어요.<br>잠시 후 새로고침해 주세요.</div>`;
+});
+
+/* ------------------------------------------------------------------ */
+/*  사용자 동작                                                         */
+/* ------------------------------------------------------------------ */
+function findItem(mid, iid){
+  return sortedItems(ui.data, mid).find(i => i.id === iid);
+}
+
+function localToggle(mid, iid, next){
+  const node = (((ui.data || {}).members || {})[mid] || {}).items || {};
+  if (node[iid]) node[iid].done = next;
+}
+
+function finishEdit(){
+  ui.editing = null; ui.adding = null; ui.addValue = ""; ui.pendingDelete = null;
+  render();
+}
+
+board.addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+  const action = btn.dataset.action;
+  const mid = btn.dataset.mid;
+  const iid = btn.dataset.iid;
+
+  if (action === "toggle"){
+    const item = findItem(mid, iid);
+    if (!item) return;
+    const next = !item.done;
+    localToggle(mid, iid, next);
+    render();
+    if (next) celebrate(mid, item.text);
+    try {
+      await update(ref(db, itemPath(mid, iid)), { done: next, updatedAt: Date.now() });
+      ui.error = null; setSync(ui.connected ? "on" : "off");
+    } catch (err){
+      localToggle(mid, iid, !next);
+      render();
+      readError(err);
+      toastBanner("저장에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    }
+    return;
+  }
+
+  if (action === "edit"){
+    const item = findItem(mid, iid);
+    if (!item) return;
+    ui.pendingDelete = null;
+    ui.adding = null;
+    ui.editing = { mid, iid, value: item.text };
+    render();
+    return;
+  }
+
+  if (action === "edit-cancel"){ finishEdit(); return; }
+
+  if (action === "edit-save"){
+    const input = board.querySelector("[data-editor]");
+    const text = (input ? input.value : "").trim();
+    const target = ui.editing;
+    if (!target) return;
+    if (!text){ input && input.focus(); return; }
+    ui.editing = null;
+    try {
+      await update(ref(db, itemPath(target.mid, target.iid)), { text, updatedAt: Date.now() });
+    } catch (err){ readError(err); toastBanner("수정을 저장하지 못했어요."); }
+    render();
+    return;
+  }
+
+  if (action === "del"){
+    ui.pendingDelete = mid + "/" + iid;
+    ui.editing = null;
+    render();
+    return;
+  }
+
+  if (action === "del-no"){
+    ui.pendingDelete = null;
+    render();
+    return;
+  }
+
+  if (action === "del-yes"){
+    ui.pendingDelete = null;
+    try {
+      await remove(ref(db, itemPath(mid, iid)));
+    } catch (err){ readError(err); toastBanner("삭제하지 못했어요."); }
+    render();
+    return;
+  }
+
+  if (action === "add"){
+    ui.editing = null;
+    ui.pendingDelete = null;
+    ui.addValue = "";
+    ui.adding = mid;
+    render();
+    return;
+  }
+
+  if (action === "add-cancel"){ finishEdit(); return; }
+
+  if (action === "add-save"){
+    const input = board.querySelector("[data-editor]");
+    const text = (input ? input.value : "").trim();
+    if (!text){ input && input.focus(); return; }
+    if (text.length > 120) return;
+    const items = sortedItems(ui.data, mid);
+    const nextOrder = items.reduce((mx, it) => Math.max(mx, it.order), 0) + 1;
+    ui.adding = null;
+    ui.addValue = "";
+    try {
+      const newRef = push(ref(db, itemsPath(mid)));
+      await set(newRef, { text, done: false, order: nextOrder, createdAt: Date.now() });
+    } catch (err){ readError(err); toastBanner("추가하지 못했어요."); }
+    render();
+    return;
+  }
+});
+
+board.addEventListener("keydown", (e) => {
+  if (!e.target.matches("[data-editor]")) return;
+  if (e.key === "Enter"){
+    e.preventDefault();
+    const kind = e.target.dataset.kind;
+    const selector = kind === "add" ? '[data-action="add-save"]' : '[data-action="edit-save"]';
+    const saveBtn = board.querySelector(selector);
+    if (saveBtn) saveBtn.click();
+  }
+});
+
+/* 편집 중에는 실시간 갱신을 잠시 보류합니다(입력 내용 보호). */
+function flushIfNeeded(){
+  if (ui.dirty && !ui.editing && !ui.adding){
+    ui.dirty = false;
+    render();
+  }
+}
+setInterval(flushIfNeeded, 700);
+
+/* 오류 안내용 임시 배너 */
+function toastBanner(msg){
+  banner.textContent = msg;
+  banner.classList.add("show");
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(() => banner.classList.remove("show"), 2600);
+}
+
+/* 첫 렌더 준비 */
+setSync("off");
+</script>
+</body>
+</html>
